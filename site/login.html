@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>Sign in</h1>
+  <section>
+    <form id="login-form">
+      <p><label for="username">Username</label><br><input id="username" name="username" placeholder="Enter username" autocomplete="username"></p>
+      <p><label for="password">Password</label><br><input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password"></p>
+      <p><label><input type="checkbox" id="remember"> Remember me</label></p>
+      <button type="submit">Sign in</button>
+    </form>
+    <p id="error" role="alert" class="hidden"></p>
+    <p><small>Try <code>tom</code> / <code>secret</code>.</small></p>
+  </section>
+</main>
+<script>
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const error = document.getElementById("error");
+    error.classList.add("hidden");
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username.value, password: password.value }),
+    });
+    if (res.ok) {
+      location.href = "account.html";
+    } else {
+      error.textContent = (await res.json()).error;
+      error.classList.remove("hidden");
+    }
+  });
+</script>
+</body>
+</html>

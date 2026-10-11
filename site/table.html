@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>Products table</h1>
+  <section>
+    <input id="search" type="search" placeholder="Search products" aria-label="Search products">
+    <button type="button" id="sort-price">Sort by price</button>
+    <p id="row-count">Showing 6 of 6</p>
+    <table id="products">
+      <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th></tr></thead>
+      <tbody>
+        <tr><td>Laptop</td><td>Electronics</td><td>999</td><td>5</td></tr>
+        <tr><td>Keyboard</td><td>Accessories</td><td>49</td><td>25</td></tr>
+        <tr><td>Mouse</td><td>Accessories</td><td>25</td><td>40</td></tr>
+        <tr><td>Monitor</td><td>Electronics</td><td>199</td><td>8</td></tr>
+        <tr><td>Desk</td><td>Furniture</td><td>350</td><td>2</td></tr>
+        <tr class="out-of-stock"><td>Chair</td><td>Furniture</td><td>150</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+<script>
+  const body = document.querySelector("#products tbody");
+  const rows = () => [...body.rows];
+  function count() {
+    const shown = rows().filter((r) => !r.classList.contains("hidden")).length;
+    document.getElementById("row-count").textContent = "Showing " + shown + " of " + rows().length;
+  }
+  document.getElementById("search").oninput = (e) => {
+    const q = e.target.value.toLowerCase();
+    rows().forEach((r) => r.classList.toggle("hidden", !r.textContent.toLowerCase().includes(q)));
+    count();
+  };
+  let asc = true;
+  document.getElementById("sort-price").onclick = () => {
+    rows().sort((a, b) => (asc ? 1 : -1) * (+a.cells[2].textContent - +b.cells[2].textContent)).forEach((r) => body.append(r));
+    asc = !asc;
+  };
+</script>
+</body>
+</html>

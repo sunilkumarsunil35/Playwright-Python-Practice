@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Signup form</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <label for="name">Name</label> <input id="name">
+  <button type="button" id="join">Join</button>
+  <p id="joined"></p>
+  <script>
+    document.getElementById("join").onclick = () => {
+      document.getElementById("joined").textContent = "Thanks for joining, " + document.getElementById("name").value + "!";
+    };
+  </script>
+</body>
+</html>

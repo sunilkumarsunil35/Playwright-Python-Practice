@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Todo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>todos</h1>
+  <section>
+    <input id="new-todo" placeholder="What needs to be done?" aria-label="New todo" autofocus>
+    <ul id="todo-list"></ul>
+    <footer id="todo-footer">
+      <span id="count" data-testid="todo-count">0 items left</span>
+      <span role="group" aria-label="Filters">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="active" aria-pressed="false">Active</button>
+        <button type="button" data-filter="completed" aria-pressed="false">Completed</button>
+      </span>
+      <button type="button" id="clear-completed">Clear completed</button>
+    </footer>
+  </section>
+</main>
+<script>
+  const KEY = "todos";
+  let todos = [];
+  let filter = "all";
+  try { todos = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { todos = []; }
+  const save = () => localStorage.setItem(KEY, JSON.stringify(todos));
+  const list = document.getElementById("todo-list");
+
+  function render() {
+    list.innerHTML = "";
+    todos
+      .filter((t) => filter === "all" || (filter === "active" ? !t.done : t.done))
+      .forEach((t) => {
+        const li = document.createElement("li");
+        li.className = "todo-item" + (t.done ? " completed" : "");
+        li.dataset.testid = "todo-item";
+        li.setAttribute("data-testid", "todo-item");
+        const box = document.createElement("input");
+        box.type = "checkbox";
+        box.checked = t.done;
+        box.setAttribute("aria-label", "Toggle " + t.text);
+        box.onchange = () => { t.done = box.checked; save(); render(); };
+        const label = document.createElement("label");
+        label.textContent = t.text;
+        label.ondblclick = () => {
+          const edit = document.createElement("input");
+          edit.className = "edit";
+          edit.value = t.text;
+          edit.setAttribute("aria-label", "Edit " + t.text);
+          edit.onkeydown = (e) => {
+            if (e.key === "Enter" && edit.value.trim()) { t.text = edit.value.trim(); save(); render(); }
+            if (e.key === "Escape") render();
+          };
+          li.replaceChild(edit, label);
+          edit.focus();
+        };
+        const del = document.createElement("button");
+        del.type = "button";
+        del.textContent = "Delete";
+        del.setAttribute("aria-label", "Delete " + t.text);
+        del.onclick = () => { todos = todos.filter((x) => x !== t); save(); render(); };
+        li.append(box, " ", label, " ", del);
+        list.append(li);
+      });
+    const left = todos.filter((t) => !t.done).length;
+    document.getElementById("count").textContent = left + (left === 1 ? " item left" : " items left");
+    document.querySelectorAll("[data-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === filter)));
+  }
+
+  document.getElementById("new-todo").addEventListener("keydown", (e) => {
+    const text = e.target.value.trim();
+    if (e.key === "Enter" && text) {
+      todos.push({ text, done: false });
+      e.target.value = "";
+      save();
+      render();
+    }
+  });
+  document.querySelectorAll("[data-filter]").forEach((b) => { b.onclick = () => { filter = b.dataset.filter; render(); }; });
+  document.getElementById("clear-completed").onclick = () => { todos = todos.filter((t) => !t.done); save(); render(); };
+  render();
+</script>
+</body>
+</html>

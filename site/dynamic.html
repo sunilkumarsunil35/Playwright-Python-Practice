@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynamic</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>Dynamic content</h1>
+
+  <section aria-label="Delayed element">
+    <button type="button" id="start">Start</button>
+    <div id="result-box"></div>
+  </section>
+
+  <section aria-label="Enable later">
+    <button type="button" id="enable">Enable submit</button>
+    <button type="button" id="submit" disabled>Submit</button>
+    <p id="submit-out"></p>
+  </section>
+
+  <section aria-label="Spinner">
+    <button type="button" id="load">Load data</button>
+    <p id="spinner" class="hidden">Loading…</p>
+    <p id="data"></p>
+  </section>
+
+  <section aria-label="Load more">
+    <ul id="items"></ul>
+    <button type="button" id="more">Load more</button>
+  </section>
+
+  <section aria-label="Counter">
+    <button type="button" id="count-start">Start counter</button>
+    <p id="counter">0</p>
+  </section>
+
+  <section aria-label="Status">
+    <button type="button" id="ready">Get ready</button>
+    <p id="ready-status">Waiting…</p>
+  </section>
+
+  <section aria-label="Toast">
+    <div id="toast">Saved! <button type="button" id="dismiss">Dismiss</button></div>
+  </section>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  $("start").onclick = () => setTimeout(() => {
+    const p = document.createElement("p");
+    p.id = "result";
+    p.textContent = "Hello World!";
+    $("result-box").append(p);
+  }, 1000);
+  $("enable").onclick = () => setTimeout(() => { $("submit").disabled = false; }, 1000);
+  $("submit").onclick = () => { $("submit-out").textContent = "Submitted"; };
+  $("load").onclick = () => {
+    $("spinner").classList.remove("hidden");
+    setTimeout(() => { $("spinner").classList.add("hidden"); $("data").textContent = "Data loaded: 42"; }, 1200);
+  };
+  let page = 0;
+  $("more").onclick = async () => {
+    page++;
+    const res = await fetch("/api/items?page=" + page);
+    const body = await res.json();
+    body.items.forEach((t) => { const li = document.createElement("li"); li.textContent = t; $("items").append(li); });
+    if (!body.hasMore) $("more").classList.add("hidden");
+  };
+  window.counter = 0;
+  $("count-start").onclick = () => {
+    const timer = setInterval(() => {
+      window.counter++;
+      $("counter").textContent = window.counter;
+      if (window.counter >= 10) clearInterval(timer);
+    }, 200);
+  };
+  $("ready").onclick = () => setTimeout(() => { $("ready-status").textContent = "Ready"; }, 800);
+  $("dismiss").onclick = () => setTimeout(() => $("toast").remove(), 500);
+</script>
+</body>
+</html>

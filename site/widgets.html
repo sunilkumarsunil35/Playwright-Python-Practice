@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widgets</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>Widgets</h1>
+
+  <section aria-label="Choices">
+    <h2>Checkbox and radio</h2>
+    <label><input type="checkbox" id="agree"> I agree to the terms</label>
+    <fieldset>
+      <legend>Size</legend>
+      <label><input type="radio" name="size" value="Small"> Small</label>
+      <label><input type="radio" name="size" value="Medium" checked> Medium</label>
+      <label><input type="radio" name="size" value="Large"> Large</label>
+    </fieldset>
+    <p id="choices">Agreed: no | Size: Medium</p>
+    <button type="button" id="continue" disabled>Continue</button>
+  </section>
+
+  <section aria-label="Dropdowns">
+    <h2>Dropdowns and slider</h2>
+    <label for="country">Country</label>
+    <select id="country">
+      <option value="">Pick one</option><option value="IN">India</option><option value="DE">Germany</option>
+      <option value="JP">Japan</option><option value="US">USA</option>
+    </select>
+    <p id="country-out">Selected: none</p>
+    <label for="fruits">Fruits</label>
+    <select id="fruits" multiple size="4">
+      <option value="apple">Apple</option><option value="banana">Banana</option>
+      <option value="cherry">Cherry</option><option value="mango">Mango</option>
+    </select>
+    <p id="fruits-out">Fruits: none</p>
+    <label for="volume">Volume</label>
+    <input type="range" id="volume" min="0" max="100" value="50">
+    <p id="volume-out">50</p>
+  </section>
+
+  <section aria-label="Keyboard">
+    <h2>Keyboard</h2>
+    <label for="key-input">Type and press Enter</label>
+    <input id="key-input">
+    <p id="char-count">Characters: 0</p>
+    <p id="key-log"></p>
+    <label for="bio">Bio</label>
+    <textarea id="bio">I like Java.</textarea>
+  </section>
+
+  <section aria-label="Mouse">
+    <h2>Mouse</h2>
+    <div class="menu">
+      <button type="button">Products</button>
+      <div class="submenu"><a href="#" data-pick>Laptops</a> <a href="#" data-pick>Phones</a></div>
+    </div>
+    <p id="menu-out"></p>
+    <button type="button" id="dbl">Double-click me</button>
+    <p id="dbl-out"></p>
+    <div id="ctx" style="padding: 8px; border: 1px solid #ccc">Right-click me</div>
+    <p id="ctx-out"></p>
+  </section>
+
+  <section aria-label="Files and drag">
+    <h2>Upload and drag-and-drop</h2>
+    <label for="upload">Upload files</label>
+    <input type="file" id="upload" multiple>
+    <p id="upload-out">No files</p>
+    <div id="drag-item" draggable="true">Item A</div>
+    <div id="drop-zone">Drop here</div>
+  </section>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  function choices() {
+    const size = document.querySelector("input[name=size]:checked");
+    $("choices").textContent = "Agreed: " + ($("agree").checked ? "yes" : "no") + " | Size: " + (size ? size.value : "none");
+    $("continue").disabled = !$("agree").checked;
+  }
+  document.querySelectorAll("#agree, input[name=size]").forEach((el) => (el.onchange = choices));
+  $("country").onchange = () => { $("country-out").textContent = "Selected: " + ($("country").value || "none"); };
+  $("fruits").onchange = () => {
+    const v = [...$("fruits").selectedOptions].map((o) => o.value);
+    $("fruits-out").textContent = "Fruits: " + (v.length ? v.join(", ") : "none");
+  };
+  $("volume").oninput = () => { $("volume-out").textContent = $("volume").value; };
+  $("key-input").oninput = () => { $("char-count").textContent = "Characters: " + $("key-input").value.length; };
+  $("key-input").onkeydown = (e) => { if (e.key === "Enter") $("key-log").textContent = "You typed: " + $("key-input").value; };
+  document.querySelectorAll("[data-pick]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); $("menu-out").textContent = "You picked " + a.textContent; }));
+  $("dbl").ondblclick = () => { $("dbl-out").textContent = "Double clicked"; };
+  $("ctx").oncontextmenu = (e) => { e.preventDefault(); $("ctx-out").textContent = "Context menu opened"; };
+  $("upload").onchange = () => {
+    const names = [...$("upload").files].map((f) => f.name);
+    $("upload-out").textContent = names.length ? names.join(", ") : "No files";
+  };
+  $("drag-item").ondragstart = (e) => e.dataTransfer.setData("text/plain", e.target.textContent);
+  $("drop-zone").ondragover = (e) => e.preventDefault();
+  $("drop-zone").ondrop = (e) => { e.preventDefault(); $("drop-zone").textContent = "Dropped: " + e.dataTransfer.getData("text/plain"); };
+</script>
+</body>
+</html>

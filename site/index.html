@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playwright Practice</title>
+<meta name="description" content="A practice site for learning Playwright with Python">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <img src="logo.svg" alt="Playwright Practice logo" title="Practice logo" width="48" height="48">
+  <h1>Welcome to the practice site</h1>
+  <p>Every page here is a small playground for one Playwright skill.</p>
+
+  <section id="cookie-banner" aria-label="Cookie banner">
+    We use cookies to remember your settings.
+    <button type="button" id="accept-cookies">Accept cookies</button>
+  </section>
+
+  <section aria-label="Greeting">
+    <button type="button" id="hello">Say hello</button>
+    <p id="greeting"></p>
+    <p>Items in cart: <span data-testid="cart-count">3</span></p>
+    <p>Status: <span id="status" class="badge online" data-state="ok">All systems operational</span></p>
+    <button type="button" disabled>Disabled button</button>
+  </section>
+
+  <section aria-label="Pricing">
+    <h2>Pricing</h2>
+    <div class="cards">
+      <article class="card"><h3>Free</h3><p>$0 / month</p><button type="button">Choose</button></article>
+      <article class="card"><h3>Pro</h3><p>$15 / month</p><button type="button">Choose</button></article>
+      <article class="card"><h3>Team</h3><p>$49 / month</p><button type="button">Choose</button></article>
+    </div>
+    <p id="plan"></p>
+  </section>
+
+  <section aria-label="Languages">
+    <h2>Playwright languages</h2>
+    <ul id="langs"><li>Python</li><li>JavaScript</li><li>Java</li><li>.NET</li></ul>
+  </section>
+</main>
+<script>
+  document.getElementById("hello").onclick = () => { document.getElementById("greeting").textContent = "Hello, Playwright!"; };
+  document.getElementById("accept-cookies").onclick = () => { document.getElementById("cookie-banner").classList.add("hidden"); };
+  document.querySelectorAll(".card button").forEach((b) => {
+    b.onclick = () => { document.getElementById("plan").textContent = "You chose " + b.closest(".card").querySelector("h3").textContent; };
+  });
+</script>
+</body>
+</html>

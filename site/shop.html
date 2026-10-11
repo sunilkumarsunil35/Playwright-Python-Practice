@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <img class="banner" src="logo.svg" alt="Shop banner" width="48" height="48">
+  <h1>Shop</h1>
+  <section>
+    <p id="loading">Loading products…</p>
+    <p id="error" role="alert" class="hidden">Failed to load products</p>
+    <ul id="products"></ul>
+    <p id="cart-count">Cart: 0</p>
+    <button type="button" id="checkout">Checkout</button>
+  </section>
+  <section id="checkout-form" class="hidden" aria-label="Checkout">
+    <form id="order">
+      <p><label for="full-name">Full name</label> <input id="full-name" required></p>
+      <p><label for="email">Email</label> <input id="email" type="email" required></p>
+      <button type="submit">Place order</button>
+    </form>
+    <p id="confirmation"></p>
+  </section>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  let cart = 0;
+  (async () => {
+    try {
+      const res = await fetch("/api/products");
+      if (!res.ok) throw new Error(res.status);
+      const products = await res.json();
+      products.forEach((p) => {
+        const li = document.createElement("li");
+        li.className = "product";
+        li.setAttribute("data-testid", "product");
+        li.innerHTML = '<span class="name"></span> <span class="price"></span> <button type="button">Add to cart</button>';
+        li.querySelector(".name").textContent = p.name;
+        li.querySelector(".price").textContent = "$" + p.price;
+        li.querySelector("button").setAttribute("aria-label", "Add " + p.name + " to cart");
+        li.querySelector("button").onclick = () => { cart++; $("cart-count").textContent = "Cart: " + cart; };
+        $("products").append(li);
+      });
+    } catch (e) {
+      $("error").classList.remove("hidden");
+    } finally {
+      $("loading").classList.add("hidden");
+    }
+  })();
+  $("checkout").onclick = () => $("checkout-form").classList.remove("hidden");
+  $("order").onsubmit = (e) => {
+    e.preventDefault();
+    $("confirmation").textContent = "Order confirmed for " + $("full-name").value + " (" + cart + (cart === 1 ? " item)" : " items)");
+  };
+</script>
+</body>
+</html>

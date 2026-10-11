@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emulation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>About your browser</h1>
+  <section>
+    <dl>
+      <dt>User agent</dt><dd id="ua"></dd>
+      <dt>Viewport</dt><dd id="viewport"></dd>
+      <dt>Color scheme</dt><dd id="scheme"></dd>
+      <dt>Language</dt><dd id="locale"></dd>
+      <dt>Time zone</dt><dd id="timezone"></dd>
+      <dt>A fixed date in your locale</dt><dd id="date"></dd>
+      <dt>Network</dt><dd id="online"></dd>
+      <dt>Location</dt><dd id="geo">Unknown</dd>
+    </dl>
+    <button type="button" id="locate">Where am I?</button>
+  </section>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const show = () => {
+    $("ua").textContent = navigator.userAgent;
+    $("viewport").textContent = innerWidth + "x" + innerHeight;
+    $("scheme").textContent = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    $("locale").textContent = navigator.language;
+    $("timezone").textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    $("date").textContent = new Date(Date.UTC(2026, 0, 15, 12)).toLocaleDateString();
+    $("online").textContent = navigator.onLine ? "online" : "offline";
+  };
+  show();
+  addEventListener("resize", show);
+  addEventListener("online", show);
+  addEventListener("offline", show);
+  $("locate").onclick = () => navigator.geolocation.getCurrentPosition(
+    (p) => { $("geo").textContent = p.coords.latitude.toFixed(4) + ", " + p.coords.longitude.toFixed(4); },
+    () => { $("geo").textContent = "Location blocked"; });
+</script>
+</body>
+</html>

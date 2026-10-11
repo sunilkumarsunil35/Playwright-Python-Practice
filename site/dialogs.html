@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dialogs</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav aria-label="Main">
+  <a href="index.html">Home</a> <a href="login.html">Login</a> <a href="todo.html">Todo</a>
+  <a href="widgets.html">Widgets</a> <a href="table.html">Table</a> <a href="dynamic.html">Dynamic</a>
+  <a href="dialogs.html">Dialogs</a> <a href="frames.html">Frames</a> <a href="tabs.html">Tabs</a>
+  <a href="downloads.html">Downloads</a> <a href="shop.html">Shop</a> <a href="emulation.html">Emulation</a>
+</nav>
+<main>
+  <h1>Dialogs</h1>
+  <section>
+    <button type="button" id="alert">Show alert</button>
+    <button type="button" id="confirm">Show confirm</button>
+    <button type="button" id="prompt">Show prompt</button>
+    <p id="dialog-out"></p>
+  </section>
+</main>
+<script>
+  const out = document.getElementById("dialog-out");
+  document.getElementById("alert").onclick = () => { alert("Hello from an alert!"); out.textContent = "Alert closed"; };
+  document.getElementById("confirm").onclick = () => { out.textContent = confirm("Are you sure?") ? "You pressed OK" : "You pressed Cancel"; };
+  document.getElementById("prompt").onclick = () => {
+    const name = prompt("What is your name?", "");
+    out.textContent = name ? "Hello, " + name : "No name given";
+  };
+</script>
+</body>
+</html>
